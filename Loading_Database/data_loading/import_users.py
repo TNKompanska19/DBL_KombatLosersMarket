@@ -1,102 +1,117 @@
-import os
-import json
-import re
+import os, json
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Table, Column, MetaData, BigInteger, Text, Boolean, Float
+from sqlalchemy.dialects.postgresql import insert
 
-# ─── CONFIG ───────────────────────────────────────────────────────────────────
+# ─── CONFIG ────────────────────────────────────────
 FOLDER = r"C:\Users\User\Desktop\TUE\Q4\DBL_Documents\data\testing"
-TABLE_NAME = "users"
 DATABASE_URL = "postgresql://postgres:1234@localhost:5432/dbl_challenge"
-# ────────────────────────────────────────────────────────────────────────────────
+TABLE_NAME = "users"
+BIGINT_MAX = 9223372036854775807
 
-COLUMNS_TO_KEEP = [
-    "user.id", "user.screen_name", "user.description", "user.protected", "user.verified", "user.followers_count",
-    "user.friends_count", "user.listed_count", "user.favourites_count", "user.statuses_count",
-    "user.created_at", "user.default_profile", "user.default_profile_image"
-
-]
-
-
-def load_json_file(filepath):
-    """Load a JSON file as an array or line-delimited objects, skipping bad lines."""
+# ─── HELPERS ───────────────────────────────────────
+def load_json(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         text = f.read().strip()
     if not text:
         return []
+
     try:
         data = json.loads(text)
         return data if isinstance(data, list) else [data]
     except json.JSONDecodeError:
-        recs = []
-        for i, line in enumerate(text.splitlines(), 1):
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                recs.append(json.loads(line))
-            except json.JSONDecodeError:
-                print(f"  → Skipping invalid JSON line {i} in {os.path.basename(filepath)}")
-        return recs
+        pass
 
-
-def make_safe_colnames(columns, max_len=63):
-    """
-    Sanitize and deduplicate column names for PostgreSQL:
-    - Replace non-alphanumerics with '_'
-    - Truncate to max_len
-    - Append suffix _1, _2… to avoid duplicates (after truncation)
-    """
-    safe_cols = []
-    seen = {}
-    for orig in columns:
-
-        s = re.sub(r'\W+', '_', orig)
-
-        s = s.strip('_')
-
-        if len(s) > max_len:
-            s = s[:max_len]
-        base = s
-        count = seen.get(base, 0)
-        if count:
-            suffix = f"_{count}"
-
-            s = base[: max_len - len(suffix)] + suffix
-        seen[base] = count + 1
-        safe_cols.append(s)
-    return safe_cols
-
-
-def main():
-    all_records = []
-    for fn in sorted(os.listdir(FOLDER)):
-        if not fn.lower().endswith('.json'):
+    valid = []
+    for i, line in enumerate(text.splitlines()):
+        line = line.strip()
+        if not line or not line.startswith('{'):
             continue
-        path = os.path.join(FOLDER, fn)
-        recs = load_json_file(path)
-        print(f"Loaded {len(recs)} records from {fn}")
-        all_records.extend(recs)
+        try:
+            valid.append(json.loads(line))
+        except json.JSONDecodeError as e:
+            print(f"Skipping broken JSON line {i+1} in {os.path.basename(filepath)}: {e}")
+    return valid
 
-    if not all_records:
-        print("No valid JSON found. Exiting.")
+
+def sanitize_text(val):
+    return val.replace('\x00', '') if isinstance(val, str) else val
+
+# ─── MAIN ──────────────────────────────────────────
+def main():
+    users = []
+    for fn in os.listdir(FOLDER):
+        if fn.endswith('.json'):
+            for record in load_json(os.path.join(FOLDER, fn)):
+                if isinstance(record, dict) and "user" in record:
+                    users.append(record["user"])
+
+    if not users:
+        print("No users found.")
         return
 
-    df = pd.json_normalize(all_records)
-    df = df[COLUMNS_TO_KEEP]
+    df = pd.json_normalize(users)
 
-    df.columns = make_safe_colnames(df.columns, max_len=63)
-    df.columns = ["id", "screen_name", "description", "protected", "verified", "followers_count",
-                  "friends_count", "listed_count", "favourites_count", "statuses_count",
-                  "created_at", "default_profile", "default_profile_image"]
+    columns = [
+        "id", "screen_name", "description", "protected", "verified", "followers_count",
+        "friends_count", "listed_count", "favourites_count", "statuses_count", "created_at",
+        "default_profile", "default_profile_image"
+    ]
 
-    df = df.applymap(
-        lambda x: json.dumps(x, ensure_ascii=False) if isinstance(x, (dict, list)) else x
+    for col in columns:
+        if col not in df.columns:
+            df[col] = None
+
+    df = df[columns]
+
+    df["id"] = pd.to_numeric(df["id"], errors="coerce")
+    df = df[df["id"].notnull() & (df["id"] <= BIGINT_MAX)]
+
+    df["description"] = df["description"].apply(sanitize_text)
+    df["screen_name"] = df["screen_name"].apply(sanitize_text)
+
+    # Convert numeric fields to float
+    for col in ["followers_count", "friends_count", "listed_count", "favourites_count", "statuses_count"]:
+        df[col] = pd.to_numeric(df[col], errors="coerce")
+
+    for col in ["protected", "verified", "default_profile", "default_profile_image"]:
+        df[col] = df[col].fillna(False).astype(bool)
+
+    df["created_at"] = df["created_at"].fillna("")
+
+    # ─── DB INSERT ──────────────────────────────────
+    engine = create_engine(DATABASE_URL)
+    meta = MetaData()
+
+    users_table = Table(TABLE_NAME, meta,
+        Column("id", BigInteger, primary_key=True),
+        Column("screen_name", Text),
+        Column("description", Text),
+        Column("protected", Boolean),
+        Column("verified", Boolean),
+        Column("followers_count", Float),
+        Column("friends_count", Float),
+        Column("listed_count", Float),
+        Column("favourites_count", Float),
+        Column("statuses_count", Float),
+        Column("created_at", Text),
+        Column("default_profile", Boolean),
+        Column("default_profile_image", Boolean),
+        extend_existing=True
     )
 
-    engine = create_engine(DATABASE_URL)
-    df.to_sql(TABLE_NAME, engine, if_exists='replace', index=False)
-    print(f"Imported {len(df)} rows into '{TABLE_NAME}'")
+    failed_rows = []
 
+    with engine.begin() as conn:
+        for start in range(0, len(df), 1000):
+            chunk = df.iloc[start:start+1000].to_dict(orient='records')
+            stmt = insert(users_table).values(chunk).on_conflict_do_nothing(index_elements=['id'])
+            try:
+                conn.execute(stmt)
+            except Exception as e:
+                print(f"❌ Error inserting chunk {start}: {e}")
+                failed_rows.extend(chunk)
+
+    print(f"✅ Inserted {len(df) - len(failed_rows)} users. ❌ Failed inserts: {len(failed_rows)}")
 
 main()

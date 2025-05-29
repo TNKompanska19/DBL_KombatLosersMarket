@@ -6,25 +6,40 @@ import os
 db_script = "create_database.py"
 
 # Other import scripts inside data_loading folder
-scripts = [
+data_loading_scripts = [
     "import_tweet.py",
     "import_users.py",
     "import_hashtags.py",
     "import_tweet_hashtags.py",
     "import_user_mentions.py",
     "import_symbols.py",
-    "import_places.py"
+    "import_places.py",
+    "insert_full_text.py",
 ]
 
-# Folder containing your data loading scripts
-script_folder = os.path.join(os.getcwd(), "data_loading")
+# Scripts in conversations/database folder
+conversation_scripts = [
+    "conversation_table_insert.py",
+    "deleting_single_tweet_conv.py",
+    "airline_involved_conv_table_update.py"
+]
+
+# Folder paths
+data_loading_folder = os.path.join(os.getcwd(), "data_loading")
+conversation_folder = os.path.join(os.getcwd(), "conversations", "database")
 
 # Run DB creation script first (current directory)
 print(f"Running: {db_script}")
 subprocess.run(["python", db_script], check=True)
 
-# Then run each script inside data_loading
-for script in scripts:
-    full_path = os.path.join(script_folder, script)
+# Run scripts in data_loading
+for script in data_loading_scripts:
+    full_path = os.path.join(data_loading_folder, script)
+    print(f"Running: {full_path}")
+    subprocess.run(["python", full_path], check=True)
+
+# Run scripts in conversations/database
+for script in conversation_scripts:
+    full_path = os.path.join(conversation_folder, script)
     print(f"Running: {full_path}")
     subprocess.run(["python", full_path], check=True)
