@@ -53,7 +53,7 @@ print(f"Model loaded on {'CPU' if device == -1 else 'GPU'}")
 # region ==  PART 4: BATCH SETTINGS (CUSTOMIZABLE) == #
 
 # === Customize per teammate
-# === Default setup is made for full execution
+# === Default setup is made for complete execution
 BATCH_SIZE = 6_500_000               # How many tweets this person should process ()
 CHUNK_SIZE = 10_000                    # How many tweets to process per DB fetch
 BATCH_NUMBER = 0                     # Set 0 for first person, 1 for second, etc.
