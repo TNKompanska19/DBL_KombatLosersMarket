@@ -8,6 +8,7 @@ from transformers import pipeline
 from psycopg2.extras import execute_values
 import psycopg2
 from datasets import Dataset
+import connect_to_db
 import warnings
 
 # Remove Pandas warning to use SQLAlchemy
@@ -18,12 +19,7 @@ warnings.filterwarnings("ignore", message="pandas only supports SQLAlchemy")
 # region==  PART 2: CONNECT TO DB (TO BE FIXED)== #
 
 # Connect to PostgreSQL (customize these values if needed)
-conn = psycopg2.connect(
-    dbname="DataChallenge",
-    user="dbadmin",
-    password="BZ6uHRGxki6a7qD",
-    host="dcpostgres.postgres.database.azure.com",
-    port="5432")
+conn = connect_to_db.get_psycopg_connection()
 
 # Enables autocommit for safer concurrent writes
 conn.set_session(autocommit=True)
