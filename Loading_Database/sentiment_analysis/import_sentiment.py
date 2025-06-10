@@ -8,7 +8,7 @@ from transformers import pipeline
 from psycopg2.extras import execute_values
 import psycopg2
 from datasets import Dataset
-import connect_to_db
+from configuration import *
 import warnings
 
 # Remove Pandas warning to use SQLAlchemy
@@ -16,14 +16,30 @@ warnings.filterwarnings("ignore", message="pandas only supports SQLAlchemy")
 
 # endregion ==  PART 1: IMPORTS == #
 
-# region==  PART 2: CONNECT TO DB (TO BE FIXED)== #
+# region == PART 2: CONNECT TO DB
 
-# Connect to PostgreSQL (customize these values if needed)
-conn = connect_to_db.get_psycopg_connection()
-
+conn = psycopg2.connect(DATABASE_URL)
 # Enables autocommit for safer concurrent writes
 conn.set_session(autocommit=True)
 print("Connected to DB")
+
+with conn.cursor() as cursor:
+    cursor.execute("""
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1
+                FROM information_schema.columns
+                WHERE table_name='tweets' AND column_name='senti_raw_tabularis'
+            ) THEN
+                ALTER TABLE tweets ADD COLUMN senti_raw_tabularis text;
+                RAISE NOTICE 'Column senti_raw_tabularis added.';
+            ELSE
+                RAISE NOTICE 'Column senti_raw_tabularis already exists.';
+            END IF;
+        END
+        $$;
+    """)
 # endregion ==  PART 2: CONNECT TO DB == #
 
 # region ==  PART 3: SENTIMENT PIPELINE SETUP (CUSTOMIZABLE)== #

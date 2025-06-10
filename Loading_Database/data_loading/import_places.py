@@ -4,12 +4,11 @@ import pandas as pd
 from sqlalchemy import create_engine, Table, MetaData, Text
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.exc import SQLAlchemyError
+from configuration import *
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
-FOLDER = r"C:\Users\User\Desktop\TUE\Q4\DBL_Documents\data\testing"
 TABLE_NAME = "places"
-DATABASE_URL = "postgresql://postgres:1234@localhost:5432/dbl_challenge"
-CHUNK_SIZE = 9000  # You can adjust this for speed vs. memory trade-off
+CHUNK_SIZE = 9000
 # ─────────────────────────────────────────────────────────────────────────────
 
 

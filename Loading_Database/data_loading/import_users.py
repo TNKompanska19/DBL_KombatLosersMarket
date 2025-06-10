@@ -2,10 +2,9 @@ import os, json
 import pandas as pd
 from sqlalchemy import create_engine, Table, Column, MetaData, BigInteger, Text, Boolean, Float
 from sqlalchemy.dialects.postgresql import insert
+from configuration import *
 
 # ─── CONFIG ────────────────────────────────────────
-FOLDER = r"C:\Users\User\Desktop\TUE\Q4\DBL_Documents\data\testing"
-DATABASE_URL = "postgresql://postgres:1234@localhost:5432/dbl_challenge"
 TABLE_NAME = "users"
 BIGINT_MAX = 9223372036854775807
 

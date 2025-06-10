@@ -4,12 +4,10 @@ import re
 import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy import BigInteger, Text
+from configuration import *
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
-FOLDER = r"C:\Users\User\Desktop\TUE\Q4\DBL_Documents\data\testing"
 TABLE_NAME = "tweet_hashtags"
-DATABASE_URL = "postgresql://postgres:1234@localhost:5432/dbl_challenge"
-
 
 # ────────────────────────────────────────────────────────────────────────────────
 

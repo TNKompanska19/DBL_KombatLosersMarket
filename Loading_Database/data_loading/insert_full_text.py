@@ -2,9 +2,7 @@ import os
 import json
 import pandas as pd
 from sqlalchemy import create_engine, text
-
-FOLDER_PATH = r"C:\Users\User\Desktop\TUE\Q4\DBL_Documents\data\testing"
-DATABASE_URL = "postgresql://postgres:1234@localhost:5432/dbl_challenge"
+from configuration import *
 
 def load_all_json_lines(folder_path):
     tweets = []
@@ -27,7 +25,7 @@ def load_all_json_lines(folder_path):
 
 def main():
     engine = create_engine(DATABASE_URL)
-    df = load_all_json_lines(FOLDER_PATH)
+    df = load_all_json_lines(FOLDER)
     print(f"[INFO] Loaded {len(df)} tweets with full_text from all JSON files.")
 
     if df.empty:

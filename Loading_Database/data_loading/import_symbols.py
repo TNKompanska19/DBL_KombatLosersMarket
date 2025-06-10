@@ -4,12 +4,8 @@ import re
 import pandas as pd
 from sqlalchemy import create_engine, BigInteger, Text
 from sqlalchemy import create_engine, text
-
+from configuration import *
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
-FOLDER = r"C:\Users\User\Desktop\TUE\Q4\DBL_Documents\data\testing"
-DATABASE_URL = (
-    "postgresql://postgres:1234@localhost:5432/dbl_challenge"
-)
 TABLE_HASHTAGS   = 'symbols'
 TABLE_TWEET_HASH = 'tweet_symbols'
 # ────────────────────────────────────────────────────────────────────────────────

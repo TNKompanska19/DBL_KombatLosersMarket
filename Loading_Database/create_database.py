@@ -1,12 +1,7 @@
 import psycopg2
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
-
-# ----------------- CONFIG --------------------
-DB_ADMIN_URL = "postgresql://postgres:1234@localhost:5432/postgres"
-NEW_DB_NAME = "dbl_challenge"
-NEW_DB_URL = f"postgresql://postgres:1234@localhost:5432/{NEW_DB_NAME}"
-# ---------------------------------------------
+from configuration import *
 
 def create_database():
     try:
@@ -27,20 +22,12 @@ def create_database():
 
 def create_tables():
     try:
-        conn = psycopg2.connect(NEW_DB_URL)
+        conn = psycopg2.connect(DATABASE_URL)
         conn.autocommit = True
         cur = conn.cursor()
         print("🚧 Creating tables...")
 
         statements = [
-            """
-            CREATE TABLE IF NOT EXISTS public.conversations (
-                id bigint NOT NULL,
-                tweet_id bigint NOT NULL,
-                airline_involved boolean,
-                CONSTRAINT conversations_pkey PRIMARY KEY (id, tweet_id)
-            );
-            """,
             """
             CREATE TABLE IF NOT EXISTS public.hashtags (
                 id bigint,

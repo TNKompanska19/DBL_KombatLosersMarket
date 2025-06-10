@@ -1,13 +1,11 @@
 import psycopg2
-
-# Database connection string
-DATABASE_URL = "postgresql://postgres:1234@localhost:5432/dbl_challenge"
+from configuration import *
 
 # Connect to the database
 conn = psycopg2.connect(DATABASE_URL)
 cur = conn.cursor()
 
-# Step 1: Fetch conversation IDs that have only one tweet
+# Fetch conversation IDs that have only one tweet
 print("Identifying single-tweet conversations...")
 cur.execute("""
     SELECT id
@@ -17,7 +15,7 @@ cur.execute("""
 """)
 single_tweet_convs = [row[0] for row in cur.fetchall()]
 
-# Step 2: Delete those conversations
+# Delete the single conversations
 if single_tweet_convs:
     print(f"Deleting {len(single_tweet_convs)} single-tweet conversations...")
     cur.execute("""
@@ -25,9 +23,9 @@ if single_tweet_convs:
         WHERE id = ANY(%s)
     """, (single_tweet_convs,))
     conn.commit()
-    print("✅ Deletion complete.")
+    print("Deletion complete.")
 else:
-    print("ℹ️ No single-tweet conversations found.")
+    print("No single-tweet conversations found.")
 
 # Clean up
 cur.close()
