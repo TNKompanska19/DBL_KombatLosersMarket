@@ -1,7 +1,8 @@
-import os
+import os,sys
 import json
 import pandas as pd
 from sqlalchemy import create_engine, text
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from configuration import *
 
 def load_all_json_lines(folder_path):
@@ -33,7 +34,7 @@ def main():
         return
 
     with engine.begin() as conn:
-        # ✅ Ensure full_text column exists in tweets table
+        # Ensure full_text column exists in tweets table
         conn.execute(text("""
         DO $$
         BEGIN

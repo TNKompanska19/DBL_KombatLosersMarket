@@ -1,6 +1,8 @@
+import sys,os
 import psycopg2
 import json
 from collections import defaultdict
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..","..")))
 from configuration import *
 
 # DB connection
@@ -112,4 +114,4 @@ conn.commit()
 cur.close()
 conn.close()
 
-print("✅ Fast update completed.")
+print("Fast update completed.")

@@ -1,5 +1,7 @@
+import sys,os
 import psycopg2
 from collections import defaultdict
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..","..")))
 from configuration import *
 # Connect to the database
 conn = psycopg2.connect(DATABASE_URL)

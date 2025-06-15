@@ -1,4 +1,6 @@
+import sys,os
 import psycopg2
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..","..")))
 from configuration import *
 
 # Connect to DB
@@ -61,4 +63,4 @@ conn.commit()
 
 cur.close()
 conn.close()
-print("✅ Conversation IDs successfully reassigned starting from 1 based on original order.")
+print("Conversation IDs successfully reassigned starting from 1 based on original order.")

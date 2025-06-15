@@ -18,14 +18,14 @@ def create_database():
         cur.close()
         conn.close()
     except Exception as e:
-        print("❌ Failed to create database:", e)
+        print("Failed to create database:", e)
 
 def create_tables():
     try:
         conn = psycopg2.connect(DATABASE_URL)
         conn.autocommit = True
         cur = conn.cursor()
-        print("🚧 Creating tables...")
+        print("Creating tables...")
 
         statements = [
             """
@@ -124,11 +124,11 @@ def create_tables():
         for sql in statements:
             cur.execute(sql)
 
-        print("✅ All tables and indexes created.")
+        print("All tables and indexes created.")
         cur.close()
         conn.close()
     except Exception as e:
-        print("❌ Failed to create tables:", e)
+        print("Failed to create tables:", e)
 
 
 

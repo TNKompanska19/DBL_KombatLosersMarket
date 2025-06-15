@@ -1,7 +1,8 @@
-import os, json
+import os,sys, json
 import pandas as pd
 from sqlalchemy import create_engine, Table, Column, MetaData, BigInteger, Text, Boolean, Float
 from sqlalchemy.dialects.postgresql import insert
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from configuration import *
 
 # ─── CONFIG ────────────────────────────────────────
@@ -108,9 +109,9 @@ def main():
             try:
                 conn.execute(stmt)
             except Exception as e:
-                print(f"❌ Error inserting chunk {start}: {e}")
+                print(f"Error inserting chunk {start}: {e}")
                 failed_rows.extend(chunk)
 
-    print(f"✅ Inserted {len(df) - len(failed_rows)} users. ❌ Failed inserts: {len(failed_rows)}")
+    print(f"Inserted {len(df) - len(failed_rows)} users. Failed inserts: {len(failed_rows)}")
 
 main()

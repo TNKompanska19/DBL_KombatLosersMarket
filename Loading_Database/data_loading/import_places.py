@@ -1,9 +1,10 @@
-import os
+import os,sys
 import json
 import pandas as pd
 from sqlalchemy import create_engine, Table, MetaData, Text
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.exc import SQLAlchemyError
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from configuration import *
 
 # ─── CONFIG ───────────────────────────────────────────────────────────────────
@@ -41,9 +42,9 @@ def insert_batch(engine, table, batch):
             stmt = pg_insert(table).values(batch)
             stmt = stmt.on_conflict_do_nothing(index_elements=['id'])
             conn.execute(stmt)
-        print(f"✓ Inserted {len(batch)} records (skipping duplicates).")
+        print(f"Inserted {len(batch)} records (skipping duplicates).")
     except SQLAlchemyError as e:
-        print(f"⚠️ Error during DB insert: {e}")
+        print(f"Error during DB insert: {e}")
 
 
 def stream_process_file(filepath, engine, table):
@@ -58,7 +59,7 @@ def stream_process_file(filepath, engine, table):
             try:
                 rec = json.loads(line)
             except json.JSONDecodeError:
-                print(f"  → Skipping invalid JSON line {i} in {os.path.basename(filepath)}")
+                print(f"Skipping invalid JSON line {i} in {os.path.basename(filepath)}")
                 continue
 
             processed = process_record(rec)
@@ -73,7 +74,7 @@ def stream_process_file(filepath, engine, table):
         if batch:
             insert_batch(engine, table, batch)
 
-    print(f"→ Finished {os.path.basename(filepath)}: {count} records processed.")
+    print(f"Finished {os.path.basename(filepath)}: {count} records processed.")
 
 
 def main():
@@ -85,7 +86,7 @@ def main():
     table = metadata.tables.get(TABLE_NAME)
 
     if table is None:
-        print(f"❌ Table '{TABLE_NAME}' not found in the database.")
+        print(f"Table '{TABLE_NAME}' not found in the database.")
         return
 
     files = sorted(f for f in os.listdir(FOLDER) if f.lower().endswith('.json'))
@@ -93,10 +94,10 @@ def main():
 
     for filename in files:
         filepath = os.path.join(FOLDER, filename)
-        print(f"→ Processing {filename}")
+        print(f"Processing {filename}")
         stream_process_file(filepath, engine, table)
 
-    print("✅ All files processed.")
+    print("All files processed.")
 
 
 if __name__ == '__main__':

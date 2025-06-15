@@ -1,6 +1,8 @@
+import sys,os
 import psycopg2
 import json
 from collections import defaultdict
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..","..")))
 from configuration import *
 
 # Connect to DB
@@ -65,4 +67,4 @@ for i in range(0, len(updates), batch_size):
     """)
 conn.commit()
 
-print("✅ Updated senti_score_until_now for all tweets.")
+print("Updated senti_score_until_now for all tweets.")
