@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 import networkx as nx
 import pickle
 import ast
+import time
 
 TABLE_NAME = "tweets"
 DATABASE_URL = "postgresql://dbadmin:BZ6uHRGxki6a7qD@dcpostgres.postgres.database.azure.com:5432/DataChallenge"
