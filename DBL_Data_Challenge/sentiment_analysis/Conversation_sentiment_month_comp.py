@@ -12,7 +12,6 @@ import time
 import pickle
 import numpy as np
 
-# --- 1. SETUP ---
 t0 = time.time()
 with open("conversation_airlines_senti_correct.gpickle", "rb") as f:
     G = pickle.load(f)
@@ -27,25 +26,24 @@ target_airlines = {
     20626359: 'Virgin Atlantic'
 }
 
-# Define a master list of ALL airline IDs to filter out their tweets later
+# Define a master list of ALL airline IDs
 all_airline_ids = {
     56377143, 106062176, 18332190, 22536055, 124476322, 26223583,
     2182373406, 38676903, 1542862735, 253340062, 218730857,
     45621423, 20626359
 }
 
-# Pre-calculate weakly connected components once to save time
+# Pre-calculate weakly connected components
 wccs = list(nx.weakly_connected_components(G))
 
-# This list will hold data from all airlines before creating the final DataFrame
 all_customer_tweets = []
 
 
-# --- 2. LOOP THROUGH EACH AIRLINE TO GATHER DATA ---
+# Loop through each airline
 for airline_id, airline_name in target_airlines.items():
     print(f"\nProcessing data for {airline_name} (ID: {airline_id})...")
     
-    # a. Isolate conversations involving the current airline
+    # Isolate conversations involving the current airline
     keep_sets = [
         comp for comp in wccs
         if any(G.nodes[n].get("user") == airline_id for n in comp)
@@ -54,7 +52,7 @@ for airline_id, airline_name in target_airlines.items():
     H = G.subgraph(nodes_to_keep)
     print(f"  Found {H.number_of_nodes()} nodes in conversations involving {airline_name}.")
     
-    # b. Extract customer tweets from this airline's conversations
+    #  Extract customer tweets from this airline's conversations
     for node in H.nodes:
         user_id = H.nodes[node].get("user")
         
@@ -73,7 +71,7 @@ for airline_id, airline_name in target_airlines.items():
             except:
                 continue
 
-# --- 3. CREATE AND PREPARE THE MASTER DATAFRAME ---
+#  Create and prepare the dataframe 
 df = pd.DataFrame(all_customer_tweets)
 print(f"\nCreated a single DataFrame with {len(df)} total customer tweets.")
 
@@ -82,9 +80,7 @@ df["created"] = pd.to_datetime(df["created"], errors="coerce")
 
 # Create a 'month' column for grouping
 df["month"] = df["created"].dt.month_name()
-
-
-# --- 4. AGGREGATE DATA FOR PLOTTING ---
+ 
 # Group by both airline and month to get the mean sentiment
 mean_sentiment_by_month = (
     df.groupby(["airline", "month"])["sentiment"]
@@ -108,7 +104,7 @@ print("\nAggregated mean sentiment data:")
 print(mean_sentiment_by_month.head())
 
 
-# --- 5. PLOTTING ---
+# PLotting
 plt.figure(figsize=(14, 8))
 
 # Use seaborn's 'hue' parameter to automatically create a line for each airline
