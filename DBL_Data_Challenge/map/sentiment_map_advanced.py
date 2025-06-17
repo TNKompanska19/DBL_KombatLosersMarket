@@ -11,7 +11,7 @@ engine = create_engine("postgresql://dbadmin:BZ6uHRGxki6a7qD@dcpostgres.postgres
 
 # Load the coordinates of points
 centroids = pd.read_csv(
-    "C:\\Users\\tatar\\Levente\\University\\DBL_Data_Challange\\full_country_centroids_200.csv",
+    "path/to/full_country_centroids_200.csv",
     header=None,
     names=["country_name", "country_code", "latitude", "longitude"]
 )
