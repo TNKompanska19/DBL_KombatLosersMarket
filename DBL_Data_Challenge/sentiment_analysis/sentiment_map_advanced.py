@@ -6,19 +6,20 @@ import plotly.express as px
 import dash
 from dash import dcc, html, Input, Output
 
-# --- Database connection ---
+# Connect to database
 engine = create_engine("postgresql://dbadmin:BZ6uHRGxki6a7qD@dcpostgres.postgres.database.azure.com:5432/DataChallenge")
 
-# --- Load country centroids ---
+# Load the coordinates of points
 centroids = pd.read_csv(
     "C:\\Users\\tatar\\Levente\\University\\DBL_Data_Challange\\full_country_centroids_200.csv",
     header=None,
     names=["country_name", "country_code", "latitude", "longitude"]
 )
 
-# --- Airlines and sentiment mapping ---
+# Airline to map
 airlines = ["klm", "lufthansa", "airfrance", "british_airways", "virginatlantic"]
 
+# Get scores for labels
 label_to_score = {
     "Very Negative": -2,
     "Negative": -1,
@@ -27,7 +28,6 @@ label_to_score = {
     "Very Positive": 2
 }
 
-# --- Helper functions ---
 def extract_label(val):
     try:
         if isinstance(val, dict):
@@ -40,13 +40,13 @@ def extract_label(val):
         return None
     return None
 
-# --- Initialize app ---
+# Start the app
 app = dash.Dash(__name__)
 app.title = "Airline Sentiment Map"
 airline_sentiment_data = {}
 
 print("[INIT] Preloading tweet sentiment data...")
-
+# Load the data from the database
 try:
     with engine.connect() as conn:
         all_dfs = []
@@ -127,7 +127,7 @@ try:
 except Exception as e:
     print(f"[ERROR INIT] Failed to preload airline data: {e}")
 
-# --- App layout ---
+# App layout
 app.layout = html.Div([
     html.H1("Airline Tweet Sentiment by Country"),
     dcc.Dropdown(
@@ -139,7 +139,7 @@ app.layout = html.Div([
     dcc.Graph(id="sentiment-map")
 ])
 
-# --- Callback for map update ---
+# Callback for selecting airlines
 @app.callback(
     Output("sentiment-map", "figure"),
     Input("airline-selector", "value")
@@ -189,7 +189,7 @@ def update_map(selected_airline):
         )
 
         return fig
-
+# Placeholder map in case of an error
     except Exception as e:
         print(f"[ERROR CALLBACK] {e}")
         fallback = pd.DataFrame({
@@ -215,7 +215,7 @@ def update_map(selected_airline):
         )
         
 
-# --- Run the app ---
+# Run the app
 if __name__ == "__main__":
     print("🚀 Dash app launching...")
     app.run(debug=True,use_reloader=False)
