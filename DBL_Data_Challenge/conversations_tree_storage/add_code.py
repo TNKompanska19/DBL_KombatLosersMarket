@@ -194,6 +194,8 @@ if G.has_node(c_id):
     child_data = G.nodes[c_id]
     print(f"Child node data: {child_data}")
 
+t0 = time.time()
+
 # Define the set of airline user IDs
 airline_ids = {
     56377143, 106062176, 18332190, 22536055, 124476322, 26223583,
