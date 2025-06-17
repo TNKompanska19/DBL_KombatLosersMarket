@@ -14,8 +14,15 @@ print("Pickle load time (s):", time.time() - t0)
 
 # Define the relevant airlines
 airline_keep = {20626359}
-
-# 106062176, 18332190, 124476322, 20626359
+"""
+airlines = {
+    "KLM" : 124476322,
+    "AirFrance": 106062176,
+    "British_Airways": 18332190,
+    "Lufthansa": 124476322,
+    "Virgin_Atlantic": 20626359
+}
+"""
 wccs = list(nx.weakly_connected_components(G))
 keep_sets = [
     comp for comp in wccs
