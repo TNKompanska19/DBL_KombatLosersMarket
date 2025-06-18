@@ -119,24 +119,31 @@
     <p>📚 Instructions & Structure:</p> <ul> 
       <li>conversations_tree_storage (presentation_3)</li>
         <ul>
-        <li>conversations_tree_storage (presentation_3)</li>
+        <li>Create_graph_file_for_conversations.py -> run this to create a graph storage file for conversations (used in some sentiment analysis related plots )</li>
         </ul>
       <li>map (presentation_3)</li>
         <ul>
-        <li>conversations_tree_storage (presentation_3)</li>
+        <li>sentiment_map_advanced.py -> run this to generate a world map with sentiment traffic (adjustable for a given month in the script itself)</li>
         </ul>
       <li>presentation_1</li>
         <ul>
-        <li>conversations_tree_storage (presentation_3)</li>
+        <li>presentation_1_EDA.ipynb -> run all from start to regenerate plots and statistics used in presentation 1</li>
         </ul>
       <li>presentation_2</li>
         <ul>
-        <li>conversations_tree_storage (presentation_3)</li>
+        <li>KLM_rlvnt_languages.ipynb -> run to derive basic statistic about different languages that appear in KLM related tweets for the whole database</li>
+        <li> length_vis_distr.ipynb -> run to derive visualization about lenght distribution of conversations</li>
+        <li> Senti_Models_evaluation.ipynb -> run to derive heatmaps and statistic that evaluate sentiment model performance on a manually premade dataset (availabe under testing_datasets)</li>
+        <li> sentiment_analysis_viz.ipynb -> run to derive exploratory visualization about sentiment analysis on single tweets.</li>
         </ul>
       <li>sentiment_analysis (presentation_3)</li>
         <ul>
-        <li>conversations_tree_storage (presentation_3)</li>
-        </ul>
+        <li>avg_senti.ipynb -> run to derive bar plot for average sentiment score per ailine</li>
+        <li>Reply_delay_vs_Av_senti_score.ipynb -> run to derive scatter plot with linear regression line that investigates correlation between ailine reply speed and sentimen of a conversation.</li>
+        <li>Sentiment_Evolution_violin_heatmap.ipynb -> run to derive violin plots and heatmaps that inverstigate sentimen evoltion of conversations and airline reply tone, and performance during different times of the day of different airline (resp.) </li>
+        <li>Sentiment_Time_Visualization.ipynb -> run to derive descriptive plot for change in conversations sentiment over a given timespan.</li>
+        <li>Visualization.ipynb -> run to derive descriptive heatmaps that investigates customer sentiment based on the language of the posts.</li>
+        </ul> 
     </ul> </details>
 
 
