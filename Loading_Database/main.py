@@ -17,6 +17,7 @@ data_loading_scripts = [
     "import_symbols.py",
     "import_places.py",
     "insert_full_text.py",
+    "created_at_timestamp.py",
 ]
 
 # Scripts in conversations/database folder
