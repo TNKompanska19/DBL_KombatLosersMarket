@@ -237,9 +237,28 @@ print(f"\nIdentified a total of {len(nodes_to_keep)} nodes to keep.")
 H = G.subgraph(nodes_to_keep).copy()
 print(f"New pruned graph 'H' has {H.number_of_nodes()} nodes and {H.number_of_edges()} edges.")
 
-# Write the new graph file
-with open("conversation_airlines_senti_correct.gpickle", "wb") as f:
+cript_dir = os.path.dirname(os.path.abspath(__file__))
+
+project_root = os.path.dirname(script_dir)
+
+# Define the target folder for our data, relative to the project root
+data_folder = os.path.join(project_root, "data")
+
+# Define the filename
+filename = "conversation_airlines_senti_correct.gpickle"
+
+# Create the data directory if it doesn't exist
+os.makedirs(data_folder, exist_ok=True)
+
+# Combine the folder and filename into the full, final path
+full_path = os.path.join(data_folder, filename)
+
+print(f"\nSaving the pruned graph to the relative project path: {full_path}")
+
+# Write the new graph file using the full path
+with open(full_path, "wb") as f:
     pickle.dump(H, f, protocol=pickle.HIGHEST_PROTOCOL)
+
 
 print(f"\nSuccessfully saved the new graph to 'conversation_airlines_senti_correct.gpickle'.")
 print(f"Total process time: {time.time() - t0:.2f} seconds.")
