@@ -92,7 +92,7 @@
       <li>Sentiment Annotator</li> 
     </ul> 
     <h4>📚 Required Libraries</h4> 
-    <pre><code>pip install pandas sqlalchemy psycopg2 transformers datasets torch tqdm</code></pre> 
+    <pre><code>pip install pandas numpy seaborn matplotlib psycopg2 sqlalchemy plotly networkx scikit-learn transformers datasets scipy</code></pre> 
     <h4>⚙️ Configuration</h4> <p>Edit <code>configuration.py</code> with your environment details:</p> 
     <ul> 
       <li><code>DB_ADMIN_URL</code> – PostgreSQL admin connection string</li> 
@@ -102,11 +102,13 @@
     </ul> 
     <pre><code>Format: postgresql://username:password@localhost:5432/database_name</code></pre> 
     <h4>🚀 Run</h4> <pre><code>cd Loading_Database/ python main.py </code></pre> <hr> 
-    <h3>📁 <code>2. DBL_Challenge/</code> – Use Shared Database</h3> 
+    <h3>📁 <code>2. DBL_Challenge/</code> – Use Shared Database/ Or the one you created vie Loading_Database\main.py</h3> 
     <p>Use this if you want to:</p> 
     <ul> 
+      <li>Generate plots and statistics from our presentations</li>
       <li>Skip creating a local DB</li> 
       <li>Connect to our hosted PostgreSQL DB</li>
+      <li>Use the database that you created</li>
     </ul> 
     <h4>📦 Contents</h4> 
     <ul> 
@@ -114,7 +116,28 @@
       <li>SQL scripts</li> 
       <li>Visualization modules</li> 
     </ul> 
-    <p>⚠️ Instructions coming soon…</p> </details>
+    <p>📚 Instructions & Structure:</p> <ul> 
+      <li>conversations_tree_storage (presentation_3)</li>
+        <ul>
+        <li>conversations_tree_storage (presentation_3)</li>
+        </ul>
+      <li>map (presentation_3)</li>
+        <ul>
+        <li>conversations_tree_storage (presentation_3)</li>
+        </ul>
+      <li>presentation_1</li>
+        <ul>
+        <li>conversations_tree_storage (presentation_3)</li>
+        </ul>
+      <li>presentation_2</li>
+        <ul>
+        <li>conversations_tree_storage (presentation_3)</li>
+        </ul>
+      <li>sentiment_analysis (presentation_3)</li>
+        <ul>
+        <li>conversations_tree_storage (presentation_3)</li>
+        </ul>
+    </ul> </details>
 
 
 <hr> <p align="center"> <em>Made with ❤️ by the DBL Data Challenge Team</em>
