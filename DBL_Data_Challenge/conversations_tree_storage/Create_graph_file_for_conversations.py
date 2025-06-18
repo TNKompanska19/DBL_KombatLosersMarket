@@ -6,9 +6,16 @@ import networkx as nx
 import pickle
 import ast
 import time
+# Take global variables from config
+import os,sys
+# Go up two levels, then into Loading_Database
+base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'Loading_Database'))
+sys.path.append(base_path)
+from configuration import *
+
 
 TABLE_NAME = "tweets"
-DATABASE_URL = "postgresql://dbadmin:BZ6uHRGxki6a7qD@dcpostgres.postgres.database.azure.com:5432/DataChallenge"
+#DATABASE_URL = "postgresql://dbadmin:BZ6uHRGxki6a7qD@dcpostgres.postgres.database.azure.com:5432/DataChallenge"
 engine = create_engine(DATABASE_URL)
 
 query = """
@@ -237,7 +244,7 @@ print(f"\nIdentified a total of {len(nodes_to_keep)} nodes to keep.")
 H = G.subgraph(nodes_to_keep).copy()
 print(f"New pruned graph 'H' has {H.number_of_nodes()} nodes and {H.number_of_edges()} edges.")
 
-cript_dir = os.path.dirname(os.path.abspath(__file__))
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 project_root = os.path.dirname(script_dir)
 
