@@ -217,5 +217,5 @@ def update_map(selected_airline):
 
 # Run the app
 if __name__ == "__main__":
-    print("🚀 Dash app launching...")
+    print("Dash app launching...")
     app.run(debug=True,use_reloader=False)
